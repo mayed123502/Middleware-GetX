@@ -1,16 +1,70 @@
-# learn_getx
 
-A new Flutter project.
+# 9 - Middleware GetX
+ 
+### الفكرة الرئيسية هي تطبيق الصلاحيات في التطبيق .. مثلا في حال سجل المستخدم دخول قبل هيك هو مش بحاجة يسجل مرة أخرى 
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+// step 1 
 
-A few resources to get you started if this is your first Flutter project:
+       initialRoute: "/",
+        getPages: [
+         GetPage(
+           name: "/",
+           page: () => const Login(),
+         ),
+         GetPage(name: "/Home", page: () => Home()),
+       ],
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+// step 2 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+          // in login Screen
+          onPressed: () {
+            sharepref!.setString("id", "1");
+            Get.offNamed("home");
+          },
+          
+          
+          
+          // in home Scereen
+          onPressed: () {
+            sharepref!.clear();
+            Get.offAllNamed("/");
+          },
+          
+          
+ // step  3
+ 
+       class AuthMiddleWare extends GetMiddleware {
+        @override
+        RouteSettings? redirect(String? route) {
+           if (sharepref!.getString("id") != null) {
+               return const RouteSettings(
+               name: "/home",
+            );
+          }
+        }
+
+// step 4 
+
+        GetPage(
+          name: "/",
+          page: () => const Login(),
+          middlewares: [AuthMiddleWare()],
+        ),
+ 
+ 
+### أخر خطوة احنا ضفنا middlewares الي راح يروح الها بالاول ويفحص ال Route
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
